@@ -16,3 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/api/goals", require("./routes/goalRoutes"));
 app.use(errorHandler);
+
+// The Model represents the data and handles the database operations,
+// the View is responsible for rendering the user interface,
+//  and the Controller handles the application's business logic and requests.
