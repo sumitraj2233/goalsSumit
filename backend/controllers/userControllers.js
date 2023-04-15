@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 const asynchnadler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 //@desc registerUser
 //@route POST /api/users
 //@access Public
@@ -30,7 +31,10 @@ const registerUser = asynchnadler(async (req, res) => {
   });
   if (user) {
     res.status(201).json({
-      user,
+      _id: user.id,
+      name: user.name,
+      email: user.email,
+      token: genertaeToken(user._id),
     });
   } else {
     res.status(400);
@@ -52,8 +56,11 @@ const loginUser = asynchnadler(async (req, res) => {
   //   console.log(userExists);
   if (user && (await bcrypt.compare(password, user.password))) {
     res.status(200).json({
-      msg: "Logged in success",
-      user,
+      msg: "Login success",
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      token: genertaeToken(user._id),
     });
   } else {
     res.status(400);
@@ -67,10 +74,17 @@ const loginUser = asynchnadler(async (req, res) => {
 
 //@desc userData
 //@route GET /api/users/me
-//@access Public
+//@access Private
 const getMe = asynchnadler(async (req, res) => {
-  res.json({
+  const user = req.user;
+  res.status(200).json({
     mesaage: "user data dispaly",
+    user: user,
   });
 });
+
+//Generate JWT
+const genertaeToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+};
 module.exports = { registerUser, loginUser, getMe };

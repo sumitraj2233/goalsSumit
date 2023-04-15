@@ -6,7 +6,7 @@ const {
   updateGoal,
   deleteGoal,
 } = require("../controllers/goalControllers");
-
+const { protect } = require("../middleware/authMiddleWare");
 // router.get("/", (req, res) => {
 //   res.json({
 //     messgae: "get goals",
@@ -18,6 +18,6 @@ const {
 // router.post("/", setGoal);
 // router.put("/:id", updateGoal);
 // router.delete("/:id", deleteGoal);
-router.route("/").get(getGoals).post(setGoal);
-router.route("/:id").put(updateGoal).delete(deleteGoal);
+router.route("/").get(protect, getGoals).post(protect, setGoal);
+router.route("/:id").put(protect, updateGoal).delete(protect, deleteGoal);
 module.exports = router;
